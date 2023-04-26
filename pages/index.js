@@ -82,7 +82,7 @@ function Product({ product }) {
 
 function Products({ products }) {
   return (
-    <div>
+    <div className="pb-24">
       {products?.map((product) => (
         <Product key={product.name} product={product} />
       ))}
