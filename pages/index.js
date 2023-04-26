@@ -23,10 +23,22 @@ export async function getServerSideProps() {
     valueRenderOption: "UNFORMATTED_VALUE",
   });
   const data = response.data.values;
+  const products = data
+    .filter(
+      (row) => row[0] && (row[20] || row[21] || row[22] || row[23] || row[24])
+    )
+    .map((row) => ({
+      name: row[0],
+      dos: row[20] || '',
+      bal: row[21] || '',
+      lusin: row[22] || '',
+      rtg: row[23] || '',
+      pcs: row[24] || '',
+    }));
 
   return {
     props: {
-      products: data.filter((row) => row[0]),
+      products,
     },
   };
 }
@@ -56,13 +68,13 @@ function Price({ label, price }) {
 function Product({ product }) {
   return (
     <div className="mb-2 rounded-md border border-zinc-200 bg-white px-4 py-2">
-      <div className="truncate font-bold">{product[0]}</div>
+      <div className="truncate font-bold">{product.name}</div>
       <div className="mt-4">
-        <Price label="Dos" price={product[20]} />
-        <Price label="Bal" price={product[21]} />
-        <Price label="Lusin" price={product[22]} />
-        <Price label="Rtg" price={product[23]} />
-        <Price label="Pcs" price={product[24]} />
+        <Price label="Dos" price={product.dos} />
+        <Price label="Bal" price={product.bal} />
+        <Price label="Lusin" price={product.lusin} />
+        <Price label="Rtg" price={product.rtg} />
+        <Price label="Pcs" price={product.pcs} />
       </div>
     </div>
   );
@@ -72,7 +84,7 @@ function Products({ products }) {
   return (
     <div>
       {products?.map((product) => (
-        <Product key={product[0]} product={product} />
+        <Product key={product.name} product={product} />
       ))}
     </div>
   );
@@ -96,7 +108,7 @@ function Search({ value, onSearch }) {
 export default function Home({ products }) {
   const [search, setSearch] = useState("");
   const filteredProducts = products.filter((product) =>
-    product[0].toLowerCase().includes(search.toLowerCase())
+    product.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
