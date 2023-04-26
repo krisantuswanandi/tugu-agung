@@ -1,6 +1,14 @@
 import Head from "next/head";
+import { Noto_Sans } from "next/font/google";
 import { google } from "googleapis";
 import { useState } from "react";
+
+const noto = Noto_Sans({
+  variable: "--font-noto-sans",
+  weight: ["400", "600"],
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export async function getServerSideProps() {
   const auth = await google.auth.getClient({
@@ -38,53 +46,55 @@ function Price({ label, price }) {
   }
 
   return (
-    <div>
-      {label}: {formatCurrency(price)}
+    <div className="flex items-baseline justify-end">
+      <div className="text-right text-sm">{formatCurrency(price)}</div>
+      <div className="ml-0.5 w-9 text-sm lowercase text-zinc-400">/{label}</div>
     </div>
   );
 }
 
 function Product({ product }) {
   return (
-    <div>
-      <div>
-        <div>Nama barang: {product[0]}</div>
-      </div>
-      <div>
-        <div>Harga modal: </div>
-        <div>
-          <Price label="Dos" price={product[15]} />
-          <Price label="Bal" price={product[16]} />
-          <Price label="Lusin" price={product[17]} />
-          <Price label="Renteng" price={product[18]} />
-          <Price label="Pcs" price={product[19]} />
-        </div>
-      </div>
-      <div>
-        <div>Harga jual: </div>
-        <div>
-          <Price label="Dos" price={product[20]} />
-          <Price label="Bal" price={product[21]} />
-          <Price label="Lusin" price={product[22]} />
-          <Price label="Renteng" price={product[23]} />
-          <Price label="Pcs" price={product[24]} />
-        </div>
+    <div className="mb-2 rounded-md border border-zinc-200 bg-white px-4 py-2">
+      <div className="truncate font-bold">{product[0]}</div>
+      <div className="mt-4">
+        <Price label="Dos" price={product[20]} />
+        <Price label="Bal" price={product[21]} />
+        <Price label="Lusin" price={product[22]} />
+        <Price label="Rtg" price={product[23]} />
+        <Price label="Pcs" price={product[24]} />
       </div>
     </div>
   );
 }
 
 function Products({ products }) {
-  return products?.map((product) => (
-    <Product key={product[0]} product={product} />
-  ));
+  return (
+    <div>
+      {products?.map((product) => (
+        <Product key={product[0]} product={product} />
+      ))}
+    </div>
+  );
+}
+
+function Search({ value, onSearch }) {
+  return (
+    <div className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-zinc-50/80 from-50% to-transparent pb-4 pt-20">
+      <div className="m-auto w-96">
+        <input
+          className="w-full rounded-md border border-zinc-200 px-2 py-1 text-sm"
+          value={value}
+          onInput={onSearch}
+          placeholder="Cari barang..."
+        />
+      </div>
+    </div>
+  );
 }
 
 export default function Home({ products }) {
   const [search, setSearch] = useState("");
-  const onSearch = (event) => {
-    setSearch(event.target.value);
-  };
   const filteredProducts = products.filter((product) =>
     product[0].toLowerCase().includes(search.toLowerCase())
   );
@@ -97,9 +107,21 @@ export default function Home({ products }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <input value={search} onInput={onSearch} />
-        <Products products={filteredProducts} />
+      <main
+        className={`${noto.variable} min-h-full bg-zinc-50 font-sans text-zinc-600`}
+      >
+        <div className="m-auto w-96">
+          <div className="py-8 text-center text-3xl font-bold text-zinc-300">
+            TUGU AGUNG
+          </div>
+          <Products products={filteredProducts} />
+          <Search
+            value={search}
+            onSearch={(event) => {
+              setSearch(event.target.value);
+            }}
+          />
+        </div>
       </main>
     </>
   );
