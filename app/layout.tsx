@@ -1,4 +1,5 @@
 import { Noto_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const noto = Noto_Sans({
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${noto.variable} h-full font-sans`}>
       <body className="h-full bg-stone-100">{children}</body>
+      <Analytics />
     </html>
   );
 }
