@@ -7,7 +7,7 @@ type SearchProps = {
 
 export function ProductSearch({ value, onSearch }: SearchProps) {
   return (
-    <div className="top-0 w-full bg-red-500">
+    <div className="top-0 w-full">
       <div className="m-auto">
         <input
           className="w-full rounded-md border border-zinc-200 p-2"
